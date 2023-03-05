@@ -37,6 +37,7 @@ class Channel:
         return youtube
 
     def to_json(self, filename):
+        """Импортируем необходимые атрибуты в файл json"""
         data = {"attr1": self.title, "attr2": self.discription,
                 "attr3": self.url, "attr4": self.subs, "attr5": self.video_count, "attr6": self.view_count}
         with open(filename, "w", encoding="UTF-8") as file:
