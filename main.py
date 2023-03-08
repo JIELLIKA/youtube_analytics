@@ -26,6 +26,7 @@ class Channel:
         return self.__channel_id
 
     def print_info(self):
+        """Получаем информацию о канале"""
         channel_info = json.dumps(self.channel, indent=2, ensure_ascii=False)
         return channel_info
 
@@ -44,9 +45,30 @@ class Channel:
             json.dump(data, file, indent=2, ensure_ascii=False)
 
 
+    def __str__(self):
+        """Вовзращаем информацию на печать в требуемом виде"""
+        return f'Youtube-канал: {self.title}'
+
+
+    def __add__(self, other) -> int:
+        """Складываем подписчиков двух каналов"""
+        return self.subs + other.subs
+
+
+    def __gt__(self, other) -> bool:
+        """Возвращает True, если количество подписчиков канала 1 больше, чем 2"""
+        return len(self.subs) > len(other.subs)
+
+
+    def __lt__(self, other) -> bool:
+        """Возвращает True, если количество подписчиков канала 2 больше, чем 1"""
+        return len(self.subs) < len(other.subs)
+
 vdud = Channel('UCMCgOm8GZkHp8zJ6l7_hIuA')
-Channel.print_info(vdud)
+chnl = Channel('UCglNYRt1fJ3RmDrWpVG1Bsg')
+print(vdud.__str__())
+print(chnl.__str__())
 
-vdud.to_json('vdud.json')
-
-
+print(vdud + chnl)
+print(vdud > chnl)
+print(vdud < chnl)
