@@ -7,6 +7,7 @@ from googleapiclient.discovery import build
 class Channel:
 
     def __init__(self, channel_id):
+        """Инициализация экземпляра класса"""
         self.__channel_id = channel_id
         api_key: str = os.getenv('SKYPRO-API-KEY')
         api_key: str = "AIzaSyC1tWpJ3nJc8DrOcYF0NF5SjUsReRZ4Hd0"
@@ -44,31 +45,50 @@ class Channel:
         with open(filename, "w", encoding="UTF-8") as file:
             json.dump(data, file, indent=2, ensure_ascii=False)
 
-
     def __str__(self):
         """Вовзращаем информацию на печать в требуемом виде"""
         return f'Youtube-канал: {self.title}'
-
 
     def __add__(self, other) -> int:
         """Складываем подписчиков двух каналов"""
         return self.subs + other.subs
 
-
     def __gt__(self, other) -> bool:
         """Возвращает True, если количество подписчиков канала 1 больше, чем 2"""
         return len(self.subs) > len(other.subs)
-
 
     def __lt__(self, other) -> bool:
         """Возвращает True, если количество подписчиков канала 2 больше, чем 1"""
         return len(self.subs) < len(other.subs)
 
-vdud = Channel('UCMCgOm8GZkHp8zJ6l7_hIuA')
-chnl = Channel('UCglNYRt1fJ3RmDrWpVG1Bsg')
-print(vdud.__str__())
-print(chnl.__str__())
 
-print(vdud + chnl)
-print(vdud > chnl)
-print(vdud < chnl)
+class Video():
+    def __init__(self, video_id: str) -> None:
+        """Инициализация экземпляра класса Video по id видео"""
+        api_key: str = os.getenv('SKYPRO-API-KEY')
+        api_key: str = "AIzaSyC1tWpJ3nJc8DrOcYF0NF5SjUsReRZ4Hd0"
+        youtube = build('youtube', 'v3', developerKey=api_key)
+        video_info = youtube.videos().list(id=video_id, part='snippet, statistics').execute()
+        self.video_name = video_info['items'][0]['snippet']['title']
+        self.video_count = video_info['items'][0]['statistics']['viewCount']
+        self.like_count = video_info['items'][0]['statistics']['likeCount']
+
+
+class PLVideo(Video):
+    def __init__(self, video_id: str, playlist_id) -> None:
+        """Инициализация экземпляра класса PLVideo с наследованием от Video"""
+        super().__init__(video_id)
+        api_key: str = "AIzaSyC1tWpJ3nJc8DrOcYF0NF5SjUsReRZ4Hd0"
+        youtube = build('youtube', 'v3', developerKey=api_key)
+        playlist_info = youtube.playlists().list(id=playlist_id,
+                                                     part='snippet, contentDetails, status').execute()
+        self.playlist_name = playlist_info['items'][0]['snippet']['title']
+
+
+
+
+
+video1 = Video('9lO06Zxhu88')
+video2 = PLVideo('BBotskuyw_M', 'PL7Ntiz7eTKwrqmApjln9u4ItzhDLRtPuD')
+print(video1.video_name)
+print(f'{video2.video_name} ({video2.playlist_name})')
